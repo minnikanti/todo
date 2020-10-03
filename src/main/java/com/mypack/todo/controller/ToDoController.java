@@ -7,8 +7,6 @@ import com.mypack.todo.services.interfaces.ToDoService;
 import com.mypack.todo.util.AppConstants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -23,7 +21,6 @@ import org.supercsv.prefs.CsvPreference;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
