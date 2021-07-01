@@ -28,13 +28,15 @@ import java.util.List;
 @Api(value = "ToDO App")
 public class ToDoController {
 
+    public static final String TODO = "todo";
+
     @Autowired
     private ToDoService toDoService;
 
     @PostMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "List all the ToDo Items")
     public ResponseEntity<Page<ToDoEntity>> getToDoItems(@RequestBody BaseSearch search) {
-        final Page<ToDoEntity> todoPage = toDoService.getToDoList(search);
+        final Page<ToDoEntity> todoPage = toDoService.findAllWithPagination(TODO, search);
         return ResponseEntity.ok().body(todoPage);
     }
 
@@ -42,7 +44,7 @@ public class ToDoController {
     @ApiOperation(value = "Save/Update ToDo item in system")
     public ResponseEntity<ToDoResponse> saveToDoItem(@RequestBody ToDoEntity todo) {
         try {
-            toDoService.saveToDo(todo);
+            toDoService.save(TODO, todo);
         } catch (final Exception e) {
             return ResponseEntity.ok().body(new ToDoResponse(HttpStatus.BAD_REQUEST.name(), AppConstants.ITEM_NOT_ADDED_TOLIST));
         }
@@ -59,14 +61,14 @@ public class ToDoController {
     @GetMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Delete ToDo item from system")
     public ResponseEntity<ToDoResponse> deleteItem(@PathVariable(name = "id") Long id) {
-        toDoService.deleteItem(id);
+        toDoService.delete(TODO, id);
         return ResponseEntity.ok().body(new ToDoResponse(HttpStatus.OK.name(), AppConstants.ITEM_COMPLETED));
     }
 
     @PostMapping(value = "/download", produces = "text/csv")
     @ApiOperation(value = "Delete ToDo item from system")
     public void download(@RequestBody BaseSearch search, final HttpServletResponse response) throws IOException {
-        List<ToDoEntity> todoList = toDoService.findAll(search);
+        List<ToDoEntity> todoList = toDoService.findAll(TODO, search);
         response.setContentType("text/csv");
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=todolist" + Instant.now().toEpochMilli() + ".csv";
